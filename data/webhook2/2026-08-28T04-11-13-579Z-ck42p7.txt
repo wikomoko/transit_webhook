@@ -1,0 +1,15 @@
+{
+  "receivedAt": "2026-08-28T04:11:13.579Z",
+  "ip": "::1",
+  "headers": {
+    "host": "localhost:3000",
+    "user-agent": "curl/8.16.0",
+    "accept": "*/*",
+    "content-type": "application/json",
+    "content-length": "13"
+  },
+  "query": {},
+  "body": {
+    "foo": "bar"
+  }
+}

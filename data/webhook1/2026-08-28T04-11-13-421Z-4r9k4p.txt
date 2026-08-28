@@ -1,0 +1,17 @@
+{
+  "receivedAt": "2026-08-28T04:11:13.421Z",
+  "ip": "::1",
+  "headers": {
+    "host": "localhost:3000",
+    "user-agent": "curl/8.16.0",
+    "accept": "*/*",
+    "content-type": "application/json",
+    "content-length": "53"
+  },
+  "query": {},
+  "body": {
+    "amount": 10000,
+    "status": "SUCCESS",
+    "trx_id": "abc123"
+  }
+}
