@@ -48,6 +48,16 @@ function handleWebhook(endpointName) {
       console.log(
         `[${endpointName}] ${req.method} ${req.originalUrl} data diterima -> ${filePath}`
       );
+      // Param bisa datang lewat query string (biasa dipakai kalau pihak
+      // ketiga hit pakai GET, mis. redirect/callback dengan authCode, state,
+      // dll di URL) atau lewat body (kalau pihak ketiga hit pakai POST).
+      // Cetak dua-duanya biar kelihatan di log, bukan cuma tersimpan di file.
+      if (req.query && Object.keys(req.query).length > 0) {
+        console.log(`[${endpointName}] query:`, req.query);
+      }
+      if (req.body && Object.keys(req.body).length > 0) {
+        console.log(`[${endpointName}] body:`, req.body);
+      }
       res.status(200).json({ ok: true, message: "Data diterima" });
     } catch (err) {
       console.error(`[${endpointName}] gagal simpan data:`, err);
@@ -56,16 +66,19 @@ function handleWebhook(endpointName) {
   };
 }
 
-app.post("/notification", handleWebhook("webhook1"));
-app.post("/status", handleWebhook("webhook2"));
+// app.all() menangkap semua method (GET, POST, dll) untuk path ini, karena
+// pihak ketiga bisa saja redirect/callback pakai GET dengan param di query
+// string (contoh: /oauth/callback?responseCode=2001000&authCode=xxx&state=..)
+// ataupun hit langsung pakai POST dengan param di body.
+app.all("/notification", handleWebhook("webhook1"));
+app.all("/status", handleWebhook("webhook2"));
+app.all("/oauth/callback", handleWebhook("oauth_callback"));
 
-app.get("/", (req, res) => {
-  res.send("Webhook server aktif. Endpoint: POST /webhook1, POST /webhook2");
-});
+app.get("/", handleWebhook("root"));
 
-// Tangkap semua request lain di luar /notification dan /status (path lain,
-// atau method lain seperti GET/PUT ke path yang sama) supaya tetap
-// tersimpan dan tercetak di log, bukan cuma 404 diam-diam.
+// Tangkap semua request lain di luar path-path di atas (path lain atau
+// method lain) supaya tetap tersimpan dan tercetak di log, bukan cuma 404
+// diam-diam.
 app.all(/.*/, handleWebhook("lainnya"));
 
 app.listen(PORT, () => {
