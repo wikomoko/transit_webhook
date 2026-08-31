@@ -29,6 +29,8 @@ function saveIncoming(endpointName, req) {
 
   const record = {
     receivedAt: now.toISOString(),
+    method: req.method,
+    url: req.originalUrl,
     ip: req.ip,
     headers: req.headers,
     query: req.query,
@@ -43,7 +45,9 @@ function handleWebhook(endpointName) {
   return (req, res) => {
     try {
       const filePath = saveIncoming(endpointName, req);
-      console.log(`[${endpointName}] data diterima -> ${filePath}`);
+      console.log(
+        `[${endpointName}] ${req.method} ${req.originalUrl} data diterima -> ${filePath}`
+      );
       res.status(200).json({ ok: true, message: "Data diterima" });
     } catch (err) {
       console.error(`[${endpointName}] gagal simpan data:`, err);
@@ -58,6 +62,11 @@ app.post("/status", handleWebhook("webhook2"));
 app.get("/", (req, res) => {
   res.send("Webhook server aktif. Endpoint: POST /webhook1, POST /webhook2");
 });
+
+// Tangkap semua request lain di luar /notification dan /status (path lain,
+// atau method lain seperti GET/PUT ke path yang sama) supaya tetap
+// tersimpan dan tercetak di log, bukan cuma 404 diam-diam.
+app.all(/.*/, handleWebhook("lainnya"));
 
 app.listen(PORT, () => {
   console.log(`Server jalan di http://localhost:${PORT}`);
