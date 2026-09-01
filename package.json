@@ -8,6 +8,8 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
+    "dana-node": "file:vendor/dana-node-2.2.2.tgz",
+    "dotenv": "^17.0.0",
     "express": "^4.19.2"
   }
 }
