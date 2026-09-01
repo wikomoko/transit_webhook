@@ -70,7 +70,7 @@ function handleWebhook(endpointName) {
 // pihak ketiga bisa saja redirect/callback pakai GET dengan param di query
 // string (contoh: /oauth/callback?responseCode=2001000&authCode=xxx&state=..)
 // ataupun hit langsung pakai POST dengan param di body.
-app.all("/notification", handleWebhook("webhook1"));
+app.all("/notification", handleWebhook("webhook1")); 
 app.all("/status", handleWebhook("webhook2"));
 app.all("/oauth/callback", handleWebhook("oauth_callback"));
 
